@@ -19,6 +19,6 @@ Route::resource('members', MemberController::class);
 // Peminjamans (CRUD + tambahan approve/return)
 Route::resource('peminjamans', PeminjamanController::class);
 
-// Optional: custom route untuk approve & return
+// Custom route untuk Approve & Return
 Route::post('/peminjamans/{id}/approve', [PeminjamanController::class, 'approve'])->name('peminjamans.approve');
 Route::post('/peminjamans/{id}/return', [PeminjamanController::class, 'returnBook'])->name('peminjamans.return');
