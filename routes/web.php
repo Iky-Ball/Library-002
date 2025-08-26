@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\PeminjamanController;
+use App\Http\Controllers\AuthController;
 
 // Halaman utama
 Route::get('/', function () {
@@ -22,3 +23,7 @@ Route::resource('peminjamans', PeminjamanController::class);
 // Custom route untuk Approve & Return
 Route::post('/peminjamans/{id}/approve', [PeminjamanController::class, 'approve'])->name('peminjamans.approve');
 Route::post('/peminjamans/{id}/return', [PeminjamanController::class, 'returnBook'])->name('peminjamans.return');
+
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
