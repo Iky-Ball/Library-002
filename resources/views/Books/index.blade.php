@@ -9,9 +9,7 @@
         <a href="{{ route('books.create') }}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300">Tambah Buku</a>
     </div>
     @if (session('success'))
-        <div class="bg-green-100 text-green-700 p-4 rounded-lg mb-4 animate-pulse">
-            {{ session('success') }}
-        </div>
+        
     @endif
     <div class="overflow-x-auto">
         <table class="w-full border-collapse">

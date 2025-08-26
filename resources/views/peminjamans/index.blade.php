@@ -11,9 +11,7 @@
         </a>
     </div>
     @if (session('success'))
-        <div class="bg-green-100 text-green-700 p-4 rounded-lg mb-4 animate-pulse">
-            {{ session('success') }}
-        </div>
+        
     @endif
     <div class="overflow-x-auto">
         <table class="w-full border-collapse">
