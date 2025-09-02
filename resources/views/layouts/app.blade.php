@@ -20,7 +20,7 @@
 <body class="font-sans">
     <nav class="bg-blue-700 p-4 text-white shadow-lg">
         <div class="container mx-auto flex flex-row justify-between items-center">
-            <h1 class="text-2xl font-bold">Manajemen Perpustakaan</h1>
+            <a href="/" class="text-2xl font-bold hover:text-yellow-300 transition duration-300">Manajemen Perpustakaan</a>
             <div class="space-x-4">
                 <a href="{{ route('books.index') }}" class="px-3 py-2 rounded-md hover:bg-blue-600 hover:text-yellow-300 transition duration-300">Buku</a>
                 <a href="{{ route('members.index') }}" class="px-3 py-2 rounded-md hover:bg-blue-600 hover:text-green-300 transition duration-300">Anggota</a>
