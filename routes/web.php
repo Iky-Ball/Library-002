@@ -6,32 +6,39 @@ use App\Http\Controllers\MemberController;
 use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\AuthController;
 
-// Rute default mengarah ke login untuk pengguna yang belum login
+// 🔹 Rute default -> hanya untuk user yang sudah login
 Route::get('/', function () {
     return view('welcome');
-})->middleware('auth'); // Hanya untuk pengguna yang sudah login
+})->middleware('auth');
 
-// Rute autentikasi
+// 🔹 Auth routes
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
-
-// Logout
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// Rute yang dilindungi autentikasi
+// 🔹 Semua user yang login bisa melihat daftar buku
 Route::middleware(['auth'])->group(function () {
-    // Books (CRUD)
-    Route::resource('books', BookController::class);
+    Route::get('/books', [BookController::class, 'index'])->name('books.index');
+});
+
+// 🔹 Member-only
+Route::middleware(['auth', 'role:member'])->group(function () {
+    Route::get('/peminjamans/mine', [PeminjamanController::class, 'myLoans'])->name('peminjamans.mine');
+});
+
+// 🔹 Admin & Librarian
+Route::middleware(['auth', 'role:admin,librarian'])->group(function () {
+    // Books (CRUD, kecuali index karena sudah umum)
+    Route::resource('books', BookController::class)->except(['index']);
 
     // Members (CRUD)
     Route::resource('members', MemberController::class);
 
-    // Peminjamans (CRUD + tambahan approve/return)
+    // Peminjamans (CRUD + approve/reject/return)
     Route::resource('peminjamans', PeminjamanController::class);
-
-    // Custom route untuk Approve & Return
-    Route::post('/peminjamans/{id}/approve', [PeminjamanController::class, 'approve'])->name('peminjamans.approve');
-    Route::post('/peminjamans/{id}/return', [PeminjamanController::class, 'returnBook'])->name('peminjamans.return');
+    Route::post('/peminjamans/{peminjaman}/approve', [PeminjamanController::class, 'approve'])->name('peminjamans.approve');
+    Route::post('/peminjamans/{peminjaman}/reject', [PeminjamanController::class, 'reject'])->name('peminjamans.reject');
+    Route::post('/peminjamans/{peminjaman}/return', [PeminjamanController::class, 'returnBook'])->name('peminjamans.return');
 });

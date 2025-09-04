@@ -17,18 +17,26 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->validate([
-            'email' => 'required|email',
+            'email'    => 'required|email',
             'password' => 'required',
         ]);
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect('/')->with('success', 'Login berhasil!');
+
+            $user = Auth::user();
+
+            // Redirect sesuai role
+            if (in_array($user->role, ['admin', 'librarian'])) {
+                return redirect()->route('peminjamans.index')->with('success', 'Login berhasil sebagai ' . ucfirst($user->role) . '!');
+            }
+
+            return redirect()->route('books.index')->with('success', 'Login berhasil!');
         }
 
         return back()->withErrors([
             'email' => 'Email atau password salah.',
-        ]);
+        ])->onlyInput('email');
     }
 
     public function showRegister()
@@ -39,15 +47,16 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:6|confirmed',
+            'name'                  => 'required|string|max:255',
+            'email'                 => 'required|email|unique:users,email',
+            'password'              => 'required|min:6|confirmed',
         ]);
 
-        User::create([
-            'name' => $request->name,
-            'email' => $request->email,
+        $user = User::create([
+            'name'     => $request->name,
+            'email'    => $request->email,
             'password' => Hash::make($request->password),
+            'role'     => 'member', // 🔹 Default role
         ]);
 
         return redirect()->route('login')->with('success', 'Registrasi berhasil! Silakan login.');

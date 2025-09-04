@@ -2,31 +2,26 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
     /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
+     * Kolom yang bisa diisi mass-assignment
      */
     protected $fillable = [
         'name',
         'email',
         'password',
+        'role',
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
+     * Kolom yang disembunyikan saat serialisasi
      */
     protected $hidden = [
         'password',
@@ -34,9 +29,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
+     * Casting atribut
      */
     protected function casts(): array
     {
@@ -44,5 +37,32 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Relasi ke Member
+     * Hanya user dengan role = 'member' yang akan punya relasi ini
+     */
+    public function member()
+    {
+        return $this->hasOne(Member::class, 'user_id');
+    }
+
+    /**
+     * Helper role
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isLibrarian(): bool
+    {
+        return $this->role === 'librarian';
+    }
+
+    public function isMember(): bool
+    {
+        return $this->role === 'member';
     }
 }
